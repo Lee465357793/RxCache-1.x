@@ -1,0 +1,64 @@
+apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
+apply plugin: 'maven'
+
+uploadArchives{
+  repositories.mavenDeployer{
+    // 配置本地仓库路径，项目根目录下的repository目录中
+    repository(url: uri('../repository'))
+    pom.groupId = "com.github.VictorAlbertos"// 唯一标识（通常为模块包名，也可以任意）
+    pom.artifactId = "RxCache" // 项目名称（通常为类库模块名称，也可以任意）
+    pom.version = "1.6.2" // 版本号
+  }
+}
+
+buildscript {
+  repositories {
+    mavenCentral()
+    jcenter()
+  }
+
+  dependencies {
+    classpath "com.neenbedankt.gradle.plugins:android-apt:1.8"
+  }
+}
+
+android {
+  compileSdkVersion 23
+  buildToolsVersion "23.0.1"
+
+  defaultConfig {
+    applicationId "victoralbertos.io.android"
+    minSdkVersion 16
+    targetSdkVersion 23
+    versionCode 1
+    versionName "1.0"
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+  lintOptions {
+    abortOnError false
+  }
+}
+
+dependencies {
+  compile fileTree(dir: 'libs', include: ['*.jar'])
+  compile project(':runtime')
+  apt project(':compiler')
+  compile 'com.github.VictorAlbertos.Jolyglot:gson:0.0.3'
+
+  testCompile 'junit:junit:4.12'
+
+  apt "com.google.dagger:dagger-compiler:2.4"
+  compile "com.google.dagger:dagger:2.4"
+  provided "org.glassfish:javax.annotation:10.0-b28"
+}
+
+
+/*configurations {
+    compile.exclude module: 'guava'
+}*/
